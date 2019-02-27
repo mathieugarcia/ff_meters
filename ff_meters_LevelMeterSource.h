@@ -187,6 +187,26 @@ public:
             }
         }
     }
+  
+    using LevelData = std::pair<float /* max/magnitude */, float /* rms */>;
+    void setLevels(const std::vector<LevelData>& data)
+    {
+      lastMeasurement = juce::Time::currentTimeMillis();
+      if (! suspended) {
+        const int         numChannels = data.size ();
+        
+        levels.resize (numChannels);
+        
+        for (int channel=0; channel < numChannels; ++channel) {
+          levels [channel].setLevels (lastMeasurement,
+                                      data[channel].first, data[channel].second,
+                                      holdMSecs);
+        }
+      }
+    }
+  
+  
+  
 
     /**
      This is called from the GUI. If processing was stalled, this will pump zeroes into the buffer,
